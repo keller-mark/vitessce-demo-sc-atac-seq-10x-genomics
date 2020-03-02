@@ -3,15 +3,15 @@ import pyBigWig
 import numpy as np
 
 if __name__ == "__main__":
-    f = h5py.File(snakemake.input[0])
     cluster_i = str(snakemake.wildcards["cluster_i"])
-
-    ids = f['ids'][()] # array([b'chr1:237588-237918', b'chr1:565103-565551', ...])
-
+    with h5py.File(snakemake.input[0], "r") as f:
+        ids = f['ids'][()] # array([b'chr1:237588-237918', b'chr1:565103-565551', ...])
+        values = f["kmeans"][cluster_i][:,0]
+    
     bw_chroms = [ x[:x.index(b':')].decode("utf-8") for x in ids ]
     bw_starts = [ int(x[x.index(b':')+1:x.index(b'-')]) for x in ids ]
     bw_ends = [ int(x[x.index(b'-')+1:]) for x in ids ]
-    bw_values = f['clusters'][cluster_i][()]
+    bw_values = values
 
     bw = pyBigWig.open(snakemake.output[0], "w")
     # hg19 header

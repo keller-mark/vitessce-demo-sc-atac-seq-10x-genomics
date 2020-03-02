@@ -11,14 +11,22 @@ rule all:
     input:
         join(PROCESSED_DIR, "pbmc_10x.cells.json"),
         join(PROCESSED_DIR, "pbmc_10x.factors.json"),
-        [ join(PROCESSED_DIR, f"pbmc_10x_peaks_{i}.bw") for i in range(10) ]
+        [ join(PROCESSED_DIR, f"pbmc_10x_peaks_{i}.bw") for i in range(1, 11) ]
+
+rule cluster_peaks_to_bw:
+    input:
+        join(RAW_DIR, "pbmc_10x_peaks_avg_per_cluster.h5")
+    output:
+        join(PROCESSED_DIR, "pbmc_10x_peaks_{cluster_i}.bw")
+    script:
+        join(SRC_DIR, "cluster_peaks_to_bw.py")
 
 rule average_peaks_per_cluster:
     input:
         peaks=join(RAW_DIR, "filtered_peak_bc_matrix.h5"),
         kmeans=join(RAW_DIR, "analysis", "clustering", "kmeans_10_clusters", "clusters.csv")
     output:
-        [ join(PROCESSED_DIR, f"pbmc_10x_peaks_{i}.bw") for i in range(10) ]
+        join(RAW_DIR, "pbmc_10x_peaks_avg_per_cluster.h5")
     script:
         join(SRC_DIR, "average_peaks_per_cluster.py")
 

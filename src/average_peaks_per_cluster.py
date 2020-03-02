@@ -1,8 +1,8 @@
 import collections
 import scipy.sparse as sp_sparse
 import tables
-import pyBigWig
 import pandas as pd
+import h5py
 
 FBCMatrix = collections.namedtuple('FBCMatrix', ['ids', 'names', 'barcodes', 'matrix'])
 def get_matrix_from_h5(filename):
@@ -36,5 +36,10 @@ if __name__ == "__main__":
     fbc_matrix = get_matrix_from_h5(snakemake.input["peaks"])
     avg_matrix = np.hstack([ avg_of_cluster(kmeans_df, fbc_matrix_ci, i) for i in range(1, 11) ])
     
-    
-    
+    with h5py.File(snakemake.output[0], "w") as f:
+        ids_data = f.create_dataset("ids", data=fbc_matrix.ids[()])
+        kmeans_group = f.create_group("kmeans")
+
+        for i in range(avg_matrix.shape[1]):
+            cluster_data = grp.create_dataset(str(i+1), data=avg_matrix[:,i])
+

@@ -3,6 +3,7 @@ Set up and activate conda environment:
 ```sh
 conda env create -f environment.yml
 source activate clodius-env
+yarn global add serve
 ```
 
 Run snakemake:
@@ -11,13 +12,15 @@ Run snakemake:
 snakemake --cores 1
 ```
 
-Ingest using higlass-server:
+Ingest the tilesets for all 10 clusters, using [higlass-server](https://github.com/higlass/higlass-server).
+The script takes as an argument the relative path to the higlass server directory.
 
 ```sh
-python manage.py ingest_tileset \
-    --filename data/processed/pbmc_10x_peaks_1.bw \
-    --filetype bigwig \
-    --datatype vector \
-    --coordSystem hg19
-# for clusters 1 to 10
+bash run_ingest.sh ../../higlass/higlass-server
+```
+
+Serve the 2 JSON files using a static file server:
+
+```sh
+serve -l 9090
 ```

@@ -11,6 +11,7 @@ rule all:
     input:
         join(PROCESSED_DIR, "pbmc_10x.cells.json"),
         join(PROCESSED_DIR, "pbmc_10x.factors.json"),
+        join(PROCESSED_DIR, "pbmc_10x.cell_sets.json"),
         [ join(PROCESSED_DIR, f"pbmc_10x_peaks_{i}.bw") for i in range(1, 11) ]
 
 rule cluster_peaks_to_bw:
@@ -32,20 +33,31 @@ rule average_peaks_per_cluster:
 
 rule process_cells_and_factors:
     input:
-        tsne=join(RAW_DIR, "analysis", "tsne", "2_components", "projection.csv"),
+        tsne_1=join(RAW_DIR, "analysis", "tsne", "2_components", "projection.csv"),
+        tsne_2=join(RAW_DIR, "tsne_from_lsa.csv"),
         kmeans=join(RAW_DIR, "analysis", "clustering", "kmeans_10_clusters", "clusters.csv")
     output:
         cells=join(PROCESSED_DIR, "pbmc_10x.cells.json"),
-        factors=join(PROCESSED_DIR, "pbmc_10x.factors.json")
+        factors=join(PROCESSED_DIR, "pbmc_10x.factors.json"),
+        cell_sets=join(PROCESSED_DIR, "pbmc_10x.cell_sets.json")
     script:
         join(SRC_DIR, "process_cells_and_factors.py")
+
+rule new_tsne_from_lsa_projection:
+    input:
+        join(RAW_DIR, "analysis", "lsa", "15_components", "projection.csv")
+    output:
+        join(RAW_DIR, "tsne_from_lsa.csv")
+    script:
+        join(SRC_DIR, "new_tsne_from_lsa_projection.py")
 
 rule untar:
     input:
         analysis_tar=join(RAW_DIR, "pbmc_analysis.tar.gz")
     output:
         join(RAW_DIR, "analysis", "tsne", "2_components", "projection.csv"),
-        join(RAW_DIR, "analysis", "clustering", "kmeans_10_clusters", "clusters.csv")
+        join(RAW_DIR, "analysis", "clustering", "kmeans_10_clusters", "clusters.csv"),
+        join(RAW_DIR, "analysis", "lsa", "15_components", "projection.csv")
     shell:
         """
         tar -xvzf {input.analysis_tar} -C {RAW_DIR}

@@ -15,6 +15,7 @@ dependencies:
   - pysam
   - snakemake
   - scipy
+  - scikit-learn
   - pyBigWig
   - pip
   - pip:

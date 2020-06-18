@@ -19,6 +19,8 @@ The script takes as an argument the relative path to the higlass server director
 bash run_ingest.sh ../../higlass/higlass-server
 ```
 
+Note: the above command may generate the following warnings `tilesets.models.DoesNotExist: Tileset matching query does not exist.`
+
 Serve the 2 JSON files using a static file server:
 
 ```sh

@@ -2,7 +2,7 @@ Set up and activate conda environment:
 
 ```sh
 conda env create -f environment.yml
-source activate clodius-env
+conda activate vitessce-demo-sc-atac-seq-10x-genomics
 yarn global add serve
 ```
 

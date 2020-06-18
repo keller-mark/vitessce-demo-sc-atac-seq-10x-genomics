@@ -10,8 +10,7 @@ BASE_URL = "http://cf.10xgenomics.com/samples/cell-atac/1.2.0/atac_v1_pbmc_5k"
 rule all:
     input:
         join(PROCESSED_DIR, "pbmc_10x.cells.json"),
-        join(PROCESSED_DIR, "pbmc_10x.factors.json"),
-        join(PROCESSED_DIR, "pbmc_10x.cell_sets.json"),
+        join(PROCESSED_DIR, "pbmc_10x.cell-sets.json"),
         [ join(PROCESSED_DIR, f"pbmc_10x_peaks_{i}.bw") for i in range(1, 11) ]
 
 rule cluster_peaks_to_bw:
@@ -31,17 +30,16 @@ rule average_peaks_per_cluster:
     script:
         join(SRC_DIR, "average_peaks_per_cluster.py")
 
-rule process_cells_and_factors:
+rule process_cells:
     input:
         tsne_1=join(RAW_DIR, "analysis", "tsne", "2_components", "projection.csv"),
         tsne_2=join(RAW_DIR, "tsne_from_lsa.csv"),
         kmeans=join(RAW_DIR, "analysis", "clustering", "kmeans_10_clusters", "clusters.csv")
     output:
         cells=join(PROCESSED_DIR, "pbmc_10x.cells.json"),
-        factors=join(PROCESSED_DIR, "pbmc_10x.factors.json"),
-        cell_sets=join(PROCESSED_DIR, "pbmc_10x.cell_sets.json")
+        cell_sets=join(PROCESSED_DIR, "pbmc_10x.cell-sets.json")
     script:
-        join(SRC_DIR, "process_cells_and_factors.py")
+        join(SRC_DIR, "process_cells.py")
 
 rule new_tsne_from_lsa_projection:
     input:

@@ -1,4 +1,5 @@
 .DS_Store
+.envrc
 .snakemake/
 __pycache__/
 data/

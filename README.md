@@ -1,3 +1,5 @@
+Vitessce branch: [`keller-mark/sc-atac-demo-v2`](https://github.com/hubmapconsortium/vitessce/tree/keller-mark/sc-atac-demo-v2)
+
 Demo: http://s3.amazonaws.com/vitessce-data/demos/2020-06-22/24f33f0/index.html?dataset=sc-atac-10x-pbmc&theme=light
 
 Set up and activate conda environment:

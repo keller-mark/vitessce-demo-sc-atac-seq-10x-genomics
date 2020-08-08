@@ -11,7 +11,16 @@ rule all:
     input:
         join(PROCESSED_DIR, "pbmc_10x.cells.json"),
         join(PROCESSED_DIR, "pbmc_10x.cell-sets.json"),
+        [ join(PROCESSED_DIR, f"pbmc_10x_peaks_{i}.bw") for i in range(1, 11) ],
+        join(PROCESSED_DIR, "pbmc_10x_peaks_by_cluster.zarr"),
+
+rule cluster_bw_to_zarr:
+    input:
         [ join(PROCESSED_DIR, f"pbmc_10x_peaks_{i}.bw") for i in range(1, 11) ]
+    output:
+        directory(join(PROCESSED_DIR, "pbmc_10x_peaks_by_cluster.zarr"))
+    script:
+        join(SRC_DIR, "cluster_bw_to_zarr.py")
 
 rule cluster_peaks_to_bw:
     input:
